@@ -1,0 +1,15 @@
+.btcrate, .btcmonthrate{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.btcrate div ,  .btcmonthrate div{
+    margin: 20px;
+    background-color: rgb(0, 170, 162);
+    color: aliceblue;
+    padding: 20px;
+}
+.heading{
+    text-align: center;
+    color: tomato;
+}

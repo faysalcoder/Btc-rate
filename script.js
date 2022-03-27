@@ -1,6 +1,6 @@
-const usdRate = document.getElementById("Usdrate");
-const eurRate = document.getElementById("Eurrate");
-const gbrRate = document.getElementById("Gbrrate");
+const usdRate = document.getElementById("usdrate");
+const eurRate = document.getElementById("eurrate");
+const gbrRate = document.getElementById("gbrrate");
 
 
 const btcRate = async (currency) => {
@@ -9,24 +9,32 @@ const btcRate = async (currency) => {
         const res = await fetch(url)
         const data = await res.json()
         loadData(data.bpi)
+        
     }
-    catch {
-
+    catch(error) {
+document.getElementById(`${currency}rate`).innerText= `${currency} Not found`
     }
 }
 
-btcRate('eur')
-btcRate('usd')
 
 const loadData = (data) => {
-    const usd = data.USD.rate;
-    const eur = data.EUR.rate;
-    console.log(usd)
-    usdRate.innerText = `${usd}`;
-    eurRate.innerText = `${eur}`;
+
+    if(typeof data==='object'){
+        console.log(data)
+        const usd = data?.USD?.rate;
+        const eur = data?.EUR?.rate;
+        
+        console.log(usd)
+        usdRate.innerText = `${usd}`;
+        eurRate.innerText = `${eur}`;
+       
+    }
+  
 }
 
-
+btcRate('usd')
+btcRate('eur')
+btcRate('gbr')
 //Rate
 
 const today = new Date();
@@ -47,16 +55,20 @@ const maxEurSelector = document.getElementById('topeurrate');
 const minEurSelector = document.getElementById('lessusdrate');
 
 
-const compareBtcRate = (currency) => {
-    const url = `https://api.coindesk.com/v1/bpi/historical/close.json?start=${lastMonth}&end=${currentMonth}&currency=${currency}`;
-    fetch(url)
-        .then(res => res.json())
-        .then(data => { return data.bpi }
-        )
+const compareBtcRate = async (currency) => {
+    try{
+        const url = `https://api.coindesk.com/v1/bpi/historical/close.json?start=${lastMonth}&end=${currentMonth}&currency=${currency}`;
+        const res = await fetch(url)
+        const data = await res.json()
+        getValue(currency, data.bpi)
+    }
+  catch(error){
+    document.getElementById(`top${currency}rate`).innerText=`${currency} Not found`
+    document.getElementById(`less${currency}rate`).innerText=`${currency} Not found`
+  }
 }
 
-const data = compareBtcRate('usd')
-console.log(data)
+
 const selectors = (max, min, data) => {
     const maxUsdSelector = document.getElementById(max);
     const minUsdSelector = document.getElementById(min);
@@ -72,21 +84,26 @@ const selectors = (max, min, data) => {
         const maxRate = Math.max.apply(null, rates);
         const minRate = Math.min.apply(null, rates);
         console.log(maxRate)
-        maxUsdSelector.innerText = `${maxRate}`;
-        minUsdSelector.innerText = minRate
+        maxUsdSelector.innerText = `Highest = ${maxRate}`;
+        minUsdSelector.innerText = `Lowest = ${minRate}`
     }
     getMaxValue(data)
 }
-const getValue = (currency) => {
+const getValue = (currency,data) => {
 
-    // if (data) {
-    //     selectors(`top${currency}rate`, `less${currency}rate`, data)
-    //     console.log(`top${currency}rate`)
+
+    selectors(`top${currency}rate`, `less${currency}rate`, data)
+    console.log(`top${currency}rate`)
+
+ 
+
+      
+
 }
 
 
 
 
-
-
-getValue('usd')
+compareBtcRate('usd')
+compareBtcRate('eur')
+compareBtcRate('gbr')
